@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+from mpl_toolkits.mplot3d import Axes3D  
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 from skfuzzy import membership as mf
@@ -319,3 +319,4 @@ if SHOW_SURFACE_B:
 
     plot3d(X_mood, Y_work, Z, 'Stress surface: Mood (integers) vs Work',
            'mood (1–5, integers)', 'work (h/week)')
+
