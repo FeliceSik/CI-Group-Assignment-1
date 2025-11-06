@@ -17,7 +17,7 @@ SHOW_SURFACE_B  = True   # mood vs work
 
 # Universes 
 income   = ctrl.Antecedent(np.arange(0, 16000.1, 1.0), 'income_rm')
-mood     = ctrl.Antecedent(np.arange(1, 6, 1), 'mood')      
+mood     = ctrl.Antecedent(np.arange(1, 6, 1), 'mood_5')      
 sleep    = ctrl.Antecedent(np.arange(0, 12.01, 0.01), 'sleep_h')
 work     = ctrl.Antecedent(np.arange(0, 80.1, 0.1), 'work_h_week')
 caffeine = ctrl.Antecedent(np.arange(0, 400.1, 0.5), 'caffeine_mg')
@@ -313,3 +313,4 @@ if SHOW_SURFACE_B:
 
     plot3d(X_mood, Y_work, Z, 'Stress surface: Mood (integers) vs Work',
            'mood (1–5, integers)', 'work (h/week)')
+
