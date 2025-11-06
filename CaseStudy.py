@@ -17,31 +17,31 @@ SHOW_SURFACE_B  = True   # mood vs work
 
 # Universes 
 income   = ctrl.Antecedent(np.arange(0, 16000.1, 1.0), 'income_rm')
-mood     = ctrl.Antecedent(np.arange(1, 6, 1), 'mood_5')      
+mood     = ctrl.Antecedent(np.arange(1, 6, 1), 'mood_5')         
 sleep    = ctrl.Antecedent(np.arange(0, 12.01, 0.01), 'sleep_h')
 work     = ctrl.Antecedent(np.arange(0, 80.1, 0.1), 'work_h_week')
 caffeine = ctrl.Antecedent(np.arange(0, 400.1, 0.5), 'caffeine_mg')
 stress   = ctrl.Consequent(np.arange(0, 100.1, 0.1), 'stress')
 
-# Membership functions 
-# Income 
+# Membership functions
+# Income
 income['Low']    = mf.trimf(income.universe, [0, 2625, 7875])
 income['Medium'] = mf.trimf(income.universe, [1965, 8535, 15105])
 income['High']   = mf.trimf(income.universe, [9796, 13844, 15867])
 
 # Mood 
-mood['Very Low']  = mf.trapmf(mood.universe, [1, 1, 1, 2])   
+mood['Very Low']  = mf.trapmf(mood.universe, [1, 1, 1, 2])
 mood['Low']       = mf.trimf(mood.universe,  [1, 2, 3])
 mood['Neutral']   = mf.trimf(mood.universe,  [2, 3, 4])
 mood['High']      = mf.trimf(mood.universe,  [3, 4, 5])
-mood['Very High'] = mf.trapmf(mood.universe, [4, 5, 5, 5])   
+mood['Very High'] = mf.trapmf(mood.universe, [4, 5, 5, 5])
 
-# Sleep (hours/day)
+# Sleep (h/day)
 sleep['Short']   = mf.trapmf(sleep.universe, [0, 0, 6, 7])
 sleep['Optimal'] = mf.trapmf(sleep.universe, [6, 7, 9, 10])
 sleep['Long']    = mf.trapmf(sleep.universe, [9, 10, 12, 12])
 
-# Working hours (week)
+# Work (h/week)
 work['Short']    = mf.trapmf(work.universe, [0, 0, 38, 40])
 work['Optimal']  = mf.trapmf(work.universe, [38, 40, 45, 47])
 work['Long']     = mf.trapmf(work.universe, [45, 47, 80, 80])
@@ -59,55 +59,64 @@ stress['Very High']  = mf.trapmf(stress.universe, [70, 85, 100, 100])
 
 # Rules 
 rules = []
-# Very High
+# AND rules
+# Very High 
 rules += [
-    ctrl.Rule(work['Long'] & sleep['Short'] & mood['Very Low'],                     stress['Very High']),
-    ctrl.Rule(work['Long'] & sleep['Short'] & caffeine['High'],                     stress['Very High']),
-    ctrl.Rule(work['Long'] & mood['Very Low'] & income['Low'],                      stress['Very High']),
-    ctrl.Rule(sleep['Short'] & mood['Very Low'] & income['Low'],                    stress['Very High']),
-    ctrl.Rule(work['Long'] & sleep['Short'] & mood['Low'] & income['Low'],          stress['Very High']),
-    ctrl.Rule(work['Long'] & mood['Very Low'] & caffeine['High'],                   stress['Very High']),
-    ctrl.Rule(sleep['Short'] & mood['Very Low'] & caffeine['High'],                 stress['Very High']),
-    ctrl.Rule(work['Long'] & sleep['Short'] & mood['Very Low'] & caffeine['High'],  stress['Very High']),
-]
-# High
-rules += [
-    ctrl.Rule(work['Long'] & sleep['Short'] & mood['Neutral'],                      stress['High']),
-    ctrl.Rule(work['Long'] & mood['Low'] & caffeine['High'],                        stress['High']),
-    ctrl.Rule(sleep['Short'] & mood['Low'] & caffeine['High'],                      stress['High']),
-    ctrl.Rule(work['Long'] & income['Low'] & mood['Neutral'],                       stress['High']),
-    ctrl.Rule(sleep['Short'] & income['Low'] & mood['Low'],                         stress['High']),
-    ctrl.Rule(work['Long'] & sleep['Optimal'] & mood['Very Low'],                   stress['High']),
-    ctrl.Rule(sleep['Short'] & work['Optimal'] & mood['Very Low'],                  stress['High']),
-    ctrl.Rule(work['Long'] & caffeine['Moderate'] & mood['Low'],                    stress['High']),
-    ctrl.Rule(sleep['Short'] & caffeine['Moderate'] & mood['Low'],                  stress['High']),
-    ctrl.Rule(income['Low'] & mood['Very Low'] & caffeine['High'],                  stress['High']),
-]
-# Moderate
-rules += [
-    ctrl.Rule(work['Long'] & sleep['Optimal'] & mood['Neutral'],                    stress['Moderate']),
-    ctrl.Rule(sleep['Short'] & work['Optimal'] & caffeine['Low'],                   stress['Moderate']),
-    ctrl.Rule(mood['Low'] & work['Optimal'] & sleep['Optimal'],                     stress['Moderate']),
-    ctrl.Rule(income['Low'] & mood['Neutral'] & work['Optimal'],                    stress['Moderate']),
-    ctrl.Rule(work['Short'] & mood['Low'] & caffeine['Moderate'],                   stress['Moderate']),
-    ctrl.Rule(sleep['Short'] & mood['Neutral'] & caffeine['Low'],                   stress['Moderate']),
-    ctrl.Rule(work['Long'] & caffeine['Low'] & mood['Neutral'],                     stress['Moderate']),
-]
-# Low
-rules += [
-    ctrl.Rule(sleep['Optimal'] & work['Optimal'] & caffeine['Low'] & mood['High'],  stress['Low']),
-    ctrl.Rule(sleep['Long'] & work['Short'] & mood['Neutral'],                       stress['Low']),
-    ctrl.Rule(income['High'] & sleep['Optimal'] & mood['High'],                      stress['Low']),
-    ctrl.Rule(work['Optimal'] & mood['Very High'] & caffeine['Low'],                 stress['Low']),
-    ctrl.Rule(sleep['Optimal'] & work['Short'] & mood['High'],                       stress['Low']),
+    ctrl.Rule(work['Long'] & sleep['Short'] & mood['Very Low'], stress['Very High']),
+    ctrl.Rule(work['Long'] & sleep['Short'] & caffeine['High'], stress['Very High']),
+    ctrl.Rule(work['Long'] & mood['Very Low'] & income['Low'], stress['Very High']),
+    ctrl.Rule(sleep['Short'] & mood['Very Low'] & income['Low'], stress['Very High']),
+    ctrl.Rule(work['Long'] & sleep['Short'] & mood['Low'] & income['Low'], stress['Very High']),
+    ctrl.Rule(work['Long'] & mood['Very Low'] & caffeine['High'], stress['Very High']),
+    ctrl.Rule(sleep['Short'] & mood['Very Low'] & caffeine['High'], stress['Very High']),
+    ctrl.Rule(work['Long'] & sleep['Short'] & mood['Very Low'] & caffeine['High'], stress['Very High']),
 ]
 
-# Build controller 
+# High
+rules += [
+    ctrl.Rule(work['Long'] & sleep['Short'] & mood['Neutral'], stress['High']),
+    ctrl.Rule(work['Long'] & mood['Low'] & caffeine['High'],   stress['High']),
+    ctrl.Rule(sleep['Short'] & mood['Low'] & caffeine['High'], stress['High']),
+    ctrl.Rule(work['Long'] & income['Low'] & mood['Neutral'],  stress['High']),
+    ctrl.Rule(sleep['Short'] & income['Low'] & mood['Low'],    stress['High']),
+    ctrl.Rule(work['Long'] & sleep['Optimal'] & mood['Very Low'],  stress['High']),
+    ctrl.Rule(sleep['Short'] & work['Optimal'] & mood['Very Low'], stress['High']),
+    ctrl.Rule(work['Long'] & caffeine['Moderate'] & mood['Low'],   stress['High']),
+    ctrl.Rule(sleep['Short'] & caffeine['Moderate'] & mood['Low'], stress['High']),
+    ctrl.Rule(income['Low'] & mood['Very Low'] & caffeine['High'], stress['High']),
+]
+
+# Moderate
+rules += [
+    ctrl.Rule(work['Long'] & sleep['Optimal'] & mood['Neutral'],  stress['Moderate']),
+    ctrl.Rule(sleep['Short'] & work['Optimal'] & caffeine['Low'], stress['Moderate']),
+    ctrl.Rule(mood['Low'] & work['Optimal'] & sleep['Optimal'],   stress['Moderate']),
+    ctrl.Rule(income['Low'] & mood['Neutral'] & work['Optimal'],  stress['Moderate']),
+    ctrl.Rule(work['Short'] & mood['Low'] & caffeine['Moderate'], stress['Moderate']),
+    ctrl.Rule(sleep['Short'] & mood['Neutral'] & caffeine['Low'], stress['Moderate']),
+    ctrl.Rule(work['Long'] & caffeine['Low'] & mood['Neutral'],   stress['Moderate']),
+]
+
+# Low
+rules += [
+    ctrl.Rule(sleep['Optimal'] & work['Optimal'] & caffeine['Low'] & mood['High'], stress['Low']),
+    ctrl.Rule(sleep['Long'] & work['Short'] & mood['Neutral'], stress['Low']),
+    ctrl.Rule(income['High'] & sleep['Optimal'] & mood['High'], stress['Low']),
+    ctrl.Rule(work['Optimal'] & mood['Very High'] & caffeine['Low'], stress['Low']),
+    ctrl.Rule(sleep['Optimal'] & work['Short'] & mood['High'], stress['Low']),
+]
+
+# OR rules (|) 
+rules.append(ctrl.Rule((work['Long'] & sleep['Short']) | (caffeine['High'] & mood['Very Low']), stress['Very High']))
+rules.append(ctrl.Rule(work['Long'] | ((sleep['Short'] & caffeine['Moderate']) & (mood['Low'] | mood['Neutral'])), stress['High']))
+rules.append(ctrl.Rule((sleep['Optimal'] | (work['Short'] & caffeine['Low'])) & (mood['High'] | mood['Very High']), stress['Low']))
+rules.append(ctrl.Rule((income['Low'] | mood['Low']) & work['Optimal'], stress['Moderate']))
+
+# Build controller
 system = ctrl.ControlSystem(rules)
 
 # Helpers
 def _round_mood_int(m):
-    """Clamp and round mood to integer 1..5."""
     return int(min(5, max(1, round(float(m)))))
 
 def _deg(var, term, x):
@@ -135,43 +144,44 @@ def analyze_drivers(income_rm_val, mood_1to5, sleep_h_val, work_h_week_val, caff
 
 def recommend(actions_needed, label):
     recs = []
+
     if label in ('Very High', 'High'):
         if actions_needed.get('sleep_short', 0) > 0.4:
-            recs.append("Prioritise sleep tonight: aim 7–9 hours; screens off 60 minutes before bed.")
+            recs.append("Prioritise sleep tonight (aim 7–9 h).")
         if actions_needed.get('work_long', 0) > 0.4:
-            recs.append("Reduce workload for 24 hours. Use 50/10 focus–break cycles; postpone non-urgent tasks.")
+            recs.append("Reduce workload for 24 h; delay non-urgent tasks.")
         if actions_needed.get('mood_vlow', 0) > 0.4 or actions_needed.get('mood_low', 0) > 0.5:
-            recs.append("Do a 2-minute 4–7–8 breathing reset, then a 10-minute walk or check-in with a friend.")
+            recs.append("Do a 2-min breathing reset, then a 10-min walk.")
         if actions_needed.get('caff_high', 0) > 0.4 or actions_needed.get('caff_moderate', 0) > 0.6:
-            recs.append("Cut caffeine now; keep under ~200 mg today and avoid after 4 pm.")
+            recs.append("Cap caffeine ≤200 mg today; avoid after 4 pm.")
         if actions_needed.get('income_low', 0) > 0.5:
-            recs.append("Schedule a budgeting check-in or look at campus financial aid resources this week.")
+            recs.append("Schedule a budgeting check-in this week.")
         if not recs:
-            recs.append("Create a recovery block: 30–60 minutes for rest, hydration, and light movement. Reassess after.")
-    if label == 'Moderate':
+            recs.append("Block 30–60 min for rest, hydration, and light movement.")
+    elif label == 'Moderate':
         if actions_needed.get('sleep_optimal', 0) < 0.4 and actions_needed.get('sleep_short', 0) > 0.2:
-            recs.append("Extend sleep by 30–60 minutes for the next two nights.")
+            recs.append("Extend sleep by 30–60 min for two nights.")
         if actions_needed.get('work_long', 0) > 0.3:
-            recs.append("Break study/work into smaller blocks and insert a short walk every hour.")
+            recs.append("Work in 50/10 focus–break cycles.")
         if actions_needed.get('caff_moderate', 0) > 0.4:
-            recs.append("Swap the next coffee for water or decaf.")
+            recs.append("Swap the next coffee for water/decaf.")
         if actions_needed.get('mood_low', 0) > 0.4:
-            recs.append("Take a 10-minute relaxation break or message someone you trust.")
+            recs.append("Take a 10-min unwind break or brief walk.")
         if not recs:
-            recs.append("Keep routines steady today; review sleep and workload tomorrow.")
-    if label == 'Low':
+            recs.append("Keep routines steady today; review tomorrow.")
+    else:  
         if actions_needed.get('sleep_optimal', 0) > 0.5 and actions_needed.get('work_optimal', 0) > 0.4:
-            recs.append("Good balance — keep your sleep schedule and work rhythm as is.")
+            recs.append("Good balance—keep your current rhythm.")
         else:
-            recs.append("Maintain current habits; add a short walk and steady meals to keep risk low.")
+            recs.append("Maintain habits; add a short daily walk.")
+
     return recs[:5]
 
 def predict_stress_with_recs(income_rm_val, mood_1to5, sleep_h_val, work_h_week_val, caffeine_mg_val):
-    """Compute stress, label, drivers, recommendations. Mood is rounded to int 1..5."""
     m_int = _round_mood_int(mood_1to5)
     sim = ctrl.ControlSystemSimulation(system)
     sim.input['income_rm']   = float(income_rm_val)
-    sim.input['mood_5']      = float(m_int)   
+    sim.input['mood_5']      = float(m_int)
     sim.input['sleep_h']     = float(sleep_h_val)
     sim.input['work_h_week'] = float(work_h_week_val)
     sim.input['caffeine_mg'] = float(caffeine_mg_val)
@@ -181,63 +191,41 @@ def predict_stress_with_recs(income_rm_val, mood_1to5, sleep_h_val, work_h_week_
     label = 'Low' if score < 25 else 'Moderate' if score < 50 else 'High' if score < 75 else 'Very High'
 
     drv, m_int_used = analyze_drivers(income_rm_val, m_int, sleep_h_val, work_h_week_val, caffeine_mg_val)
-
-    ups = {
-        'Work: Long': drv['work_long'],
-        'Sleep: Short': drv['sleep_short'],
-        'Caffeine: High': drv['caff_high'],
-        'Caffeine: Moderate': drv['caff_moderate'],
-        'Mood: Very Low': drv['mood_vlow'],
-        'Mood: Low': drv['mood_low'],
-        'Income: Low': drv['income_low'],
-    }
-    downs = {
-        'Sleep: Optimal': drv['sleep_optimal'],
-        'Work: Optimal': drv['work_optimal'],
-        'Work: Short': drv['work_short'],
-        'Mood: High/Very High': max(drv['mood_high'], drv['mood_vhigh']),
-        'Caffeine: Low': drv['caff_low'],
-        'Income: High': drv['income_high'],
-    }
-
-    def top_items(d, thresh=0.35, k=5):
-        return [(k_, round(v_, 2)) for k_, v_ in sorted(d.items(), key=lambda t: t[1], reverse=True) if v_ > thresh][:k]
-
-    top_up = top_items(ups, 0.35, 5)
-    top_down = top_items(downs, 0.45, 3)
     recs = recommend(drv, label)
+    return score, label, recs, sim, m_int_used
 
-    return score, label, top_up, top_down, recs, sim, m_int_used
-
-# Case Study
+# Case Study 
 cases = [
-    ('Case A', 1800, 2, 5.0, 60, 350), 
+    ('Case A', 1800, 2, 5.0, 60, 350),
     ('Case B', 6000, 3, 7.5, 42, 120),
-    ('Case C', 12000, 4, 9.0, 30, 50),  
-    ('Case D', 3500, 2, 6.0, 50, 280),  
+    ('Case C', 12000, 4, 9.0, 30, 50),
+    ('Case D', 3500, 2, 6.0, 50, 280),
 ]
 for name, inc, md, slp, wk, caf in cases:
-    score, label, top_up, top_down, recs, _, m_int_used = predict_stress_with_recs(inc, md, slp, wk, caf)
+    score, label, recs, _, mood_used = predict_stress_with_recs(inc, md, slp, wk, caf)
     print(f"\n{name}: Stress={score:.1f} → {label} "
-          f"(income={inc} RM, mood={m_int_used}/5, sleep={slp}h, work={wk}h/wk, caffeine={caf}mg)")
-    if top_up:
-        print("  Drivers pushing risk up:", "; ".join([f"{k} {v}" for k, v in top_up]))
-    if top_down:
-        print("  Protective factors:", "; ".join([f"{k} {v}" for k, v in top_down]))
-    if recs:
-        print("  Recommendations:")
-        for r in recs:
-            print("   -", r)
+          f"(income={inc} RM, mood={mood_used}/5, sleep={slp}h, work={wk}h/wk, caffeine={caf}mg)")
+    print("  Recommendations:")
+    for r in recs:
+        print("   -", r)
 
-# Membership diagrams 
+# Membership diagrams
 if SHOW_MEMBERSHIP:
-    income.view(); mood.view(); sleep.view(); work.view(); caffeine.view(); stress.view()
-    plt.xticks([1,2,3,4,5]) 
+    income.view()
+
+    mood.view()
+    plt.gca().set_xticks([1,2,3,4,5])  
+
+    sleep.view()
+    work.view()
+    caffeine.view()
+    stress.view()
+    plt.gca().set_xticks(np.arange(0, 101, 20))
     plt.show()
 
-# Aggregated output 
+# Aggregated output
 if SHOW_AGGREGATED:
-    _, _, _, _, _, sim_plot, _ = predict_stress_with_recs(3000, 3, 5.5, 50, 180)  
+    _, _, _, sim_plot, _ = predict_stress_with_recs(3000, 3, 5.5, 50, 180)
     stress.view(sim=sim_plot)
     plt.title("Aggregated output for example inputs")
     plt.show()
@@ -292,7 +280,7 @@ if SHOW_SURFACE_A:
 
 # Surface B: Mood vs Work 
 if SHOW_SURFACE_B:
-    mood_vals = np.arange(1, 6, 1) 
+    mood_vals = np.arange(1, 6, 1)
     work_vals = np.linspace(work.universe.min(), work.universe.max(), 60)
     X_mood, Y_work = np.meshgrid(mood_vals, work_vals)
     Z = np.zeros_like(X_mood, dtype=float)
@@ -303,7 +291,7 @@ if SHOW_SURFACE_B:
             sim_local.input['income_rm']   = 3000.0
             sim_local.input['sleep_h']     = 6.5
             sim_local.input['caffeine_mg'] = 120.0
-            sim_local.input['mood_5']      = float(int(X_mood[i, j]))  
+            sim_local.input['mood_5']      = float(int(X_mood[i, j]))
             sim_local.input['work_h_week'] = float(Y_work[i, j])
             try:
                 sim_local.compute()
@@ -311,5 +299,4 @@ if SHOW_SURFACE_B:
             except Exception:
                 Z[i, j] = np.nan
 
-    plot3d(X_mood, Y_work, Z, 'Stress surface: Mood vs Work',
-           'mood (1–5)', 'work (h/week)')
+    plot3d(X_mood, Y_work, Z, 'Stress surface: Mood vs Work', 'mood (1–5)', 'work (h/week)')
