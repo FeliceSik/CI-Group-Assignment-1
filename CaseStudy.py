@@ -1,3 +1,4 @@
+# 2.2.7 Case Study
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -105,7 +106,7 @@ rules += [
     ctrl.Rule(sleep['Optimal'] & work['Short'] & mood['High'], stress['Low']),
 ]
 
-# OR rules (|) 
+# OR rules 
 rules.append(ctrl.Rule((work['Long'] & sleep['Short']) | (caffeine['High'] & mood['Very Low']), stress['Very High']))
 rules.append(ctrl.Rule(work['Long'] | ((sleep['Short'] & caffeine['Moderate']) & (mood['Low'] | mood['Neutral'])), stress['High']))
 rules.append(ctrl.Rule((sleep['Optimal'] | (work['Short'] & caffeine['Low'])) & (mood['High'] | mood['Very High']), stress['Low']))
@@ -299,3 +300,4 @@ if SHOW_SURFACE_B:
                 Z[i, j] = np.nan
 
     plot3d(X_mood, Y_work, Z, 'Stress surface: Mood vs Work', 'mood (1–5)', 'work (h/week)')
+
