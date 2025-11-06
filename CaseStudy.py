@@ -171,7 +171,7 @@ def predict_stress_with_recs(income_rm_val, mood_1to5, sleep_h_val, work_h_week_
     m_int = _round_mood_int(mood_1to5)
     sim = ctrl.ControlSystemSimulation(system)
     sim.input['income_rm']   = float(income_rm_val)
-    sim.input['mood_5']      = float(m_int)   # integer only
+    sim.input['mood_5']      = float(m_int)   
     sim.input['sleep_h']     = float(sleep_h_val)
     sim.input['work_h_week'] = float(work_h_week_val)
     sim.input['caffeine_mg'] = float(caffeine_mg_val)
@@ -311,5 +311,5 @@ if SHOW_SURFACE_B:
             except Exception:
                 Z[i, j] = np.nan
 
-    plot3d(X_mood, Y_work, Z, 'Stress surface: Mood (integers) vs Work',
-           'mood (1–5, integers)', 'work (h/week)')
+    plot3d(X_mood, Y_work, Z, 'Stress surface: Mood vs Work',
+           'mood (1–5)', 'work (h/week)')
