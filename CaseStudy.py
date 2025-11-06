@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D  
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 from skfuzzy import membership as mf
@@ -147,9 +146,9 @@ def recommend(actions_needed, label):
 
     if label in ('Very High', 'High'):
         if actions_needed.get('sleep_short', 0) > 0.4:
-            recs.append("Prioritise sleep tonight (aim 7–9 h).")
+            recs.append("Prioritise sleep tonight.")
         if actions_needed.get('work_long', 0) > 0.4:
-            recs.append("Reduce workload for 24 h; delay non-urgent tasks.")
+            recs.append("Reduce workload for 24 hour; delay non-urgent tasks.")
         if actions_needed.get('mood_vlow', 0) > 0.4 or actions_needed.get('mood_low', 0) > 0.5:
             recs.append("Do a 2-min breathing reset, then a 10-min walk.")
         if actions_needed.get('caff_high', 0) > 0.4 or actions_needed.get('caff_moderate', 0) > 0.6:
@@ -164,7 +163,7 @@ def recommend(actions_needed, label):
         if actions_needed.get('work_long', 0) > 0.3:
             recs.append("Work in 50/10 focus–break cycles.")
         if actions_needed.get('caff_moderate', 0) > 0.4:
-            recs.append("Swap the next coffee for water/decaf.")
+            recs.append("Swap the next coffee for water.")
         if actions_needed.get('mood_low', 0) > 0.4:
             recs.append("Take a 10-min unwind break or brief walk.")
         if not recs:
@@ -204,7 +203,7 @@ cases = [
 for name, inc, md, slp, wk, caf in cases:
     score, label, recs, _, mood_used = predict_stress_with_recs(inc, md, slp, wk, caf)
     print(f"\n{name}: Stress={score:.1f} → {label} "
-          f"(income={inc} RM, mood={mood_used}/5, sleep={slp}h, work={wk}h/wk, caffeine={caf}mg)")
+          f"(income=RM {inc}, mood={mood_used}/5, sleep={slp} h, work={wk} h/week, caffeine={caf} mg)")
     print("  Recommendations:")
     for r in recs:
         print("   -", r)
