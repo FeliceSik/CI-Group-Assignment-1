@@ -313,4 +313,3 @@ if SHOW_SURFACE_B:
 
     plot3d(X_mood, Y_work, Z, 'Stress surface: Mood (integers) vs Work',
            'mood (1–5, integers)', 'work (h/week)')
-
