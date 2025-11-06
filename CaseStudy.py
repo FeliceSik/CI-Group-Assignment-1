@@ -9,47 +9,42 @@ from skfuzzy import membership as mf
 plt.close('all')
 print("Matplotlib backend:", matplotlib.get_backend())
 
-# -----------------------------
 # Display toggles
 SHOW_MEMBERSHIP = True
 SHOW_AGGREGATED = True
 SHOW_SURFACE_A  = True   # sleep vs work
 SHOW_SURFACE_B  = True   # mood vs work
-# -----------------------------
 
-# ---------- 1) Universes ----------
+# Universes 
 income   = ctrl.Antecedent(np.arange(0, 16000.1, 1.0), 'income_rm')
-# MOOD: integers only
-mood     = ctrl.Antecedent(np.arange(1, 6, 1),          'mood_5')      # 1,2,3,4,5
-sleep    = ctrl.Antecedent(np.arange(0, 12.01, 0.01),   'sleep_h')
-work     = ctrl.Antecedent(np.arange(0, 80.1, 0.1),     'work_h_week')
-caffeine = ctrl.Antecedent(np.arange(0, 400.1, 0.5),    'caffeine_mg')
+mood     = ctrl.Antecedent(np.arange(1, 6, 1), 'mood')      
+sleep    = ctrl.Antecedent(np.arange(0, 12.01, 0.01), 'sleep_h')
+work     = ctrl.Antecedent(np.arange(0, 80.1, 0.1), 'work_h_week')
+caffeine = ctrl.Antecedent(np.arange(0, 400.1, 0.5), 'caffeine_mg')
+stress   = ctrl.Consequent(np.arange(0, 100.1, 0.1), 'stress')
 
-stress   = ctrl.Consequent(np.arange(0, 100.1, 0.1),    'stress')
+# Membership functions 
+# Income 
+income['Low']    = mf.trimf(income.universe, [0, 2625, 7875])
+income['Medium'] = mf.trimf(income.universe, [1965, 8535, 15105])
+income['High']   = mf.trimf(income.universe, [9796, 13844, 15867])
 
-# ---------- 2) Membership functions ----------
-# Income (triangles per your spec)
-income['Low']    = mf.trimf(income.universe,  [0, 2625, 7875])
-income['Medium'] = mf.trimf(income.universe,  [1965, 8535, 15105])
-income['High']   = mf.trimf(income.universe,  [9796, 13844, 15867])
-
-# Mood (integer-centered sets)
-# Edge sets use traps, inner sets use triangles
-mood['Very Low']  = mf.trapmf(mood.universe, [1, 1, 1, 2])   # full at 1, fades by 2
+# Mood 
+mood['Very Low']  = mf.trapmf(mood.universe, [1, 1, 1, 2])   
 mood['Low']       = mf.trimf(mood.universe,  [1, 2, 3])
 mood['Neutral']   = mf.trimf(mood.universe,  [2, 3, 4])
 mood['High']      = mf.trimf(mood.universe,  [3, 4, 5])
-mood['Very High'] = mf.trapmf(mood.universe, [4, 5, 5, 5])   # rises from 4 to full at 5
+mood['Very High'] = mf.trapmf(mood.universe, [4, 5, 5, 5])   
 
 # Sleep (hours/day)
-sleep['Short']   = mf.trapmf(sleep.universe,  [0, 0, 6, 7])
-sleep['Optimal'] = mf.trapmf(sleep.universe,  [6, 7, 9, 10])
-sleep['Long']    = mf.trapmf(sleep.universe,  [9, 10, 12, 12])
+sleep['Short']   = mf.trapmf(sleep.universe, [0, 0, 6, 7])
+sleep['Optimal'] = mf.trapmf(sleep.universe, [6, 7, 9, 10])
+sleep['Long']    = mf.trapmf(sleep.universe, [9, 10, 12, 12])
 
-# Work (hours/week)
-work['Short']    = mf.trapmf(work.universe,   [0, 0, 38, 40])
-work['Optimal']  = mf.trapmf(work.universe,   [38, 40, 45, 47])
-work['Long']     = mf.trapmf(work.universe,   [45, 47, 80, 80])
+# Working hours (week)
+work['Short']    = mf.trapmf(work.universe, [0, 0, 38, 40])
+work['Optimal']  = mf.trapmf(work.universe, [38, 40, 45, 47])
+work['Long']     = mf.trapmf(work.universe, [45, 47, 80, 80])
 
 # Caffeine (mg/day)
 caffeine['Low']      = mf.trapmf(caffeine.universe, [0, 0, 150, 200])
@@ -62,7 +57,7 @@ stress['Moderate']   = mf.trimf(stress.universe,  [20, 35, 50])
 stress['High']       = mf.trimf(stress.universe,  [45, 60, 75])
 stress['Very High']  = mf.trapmf(stress.universe, [70, 85, 100, 100])
 
-# ---------- 3) Rules ----------
+# Rules 
 rules = []
 # Very High
 rules += [
@@ -107,10 +102,10 @@ rules += [
     ctrl.Rule(sleep['Optimal'] & work['Short'] & mood['High'],                       stress['Low']),
 ]
 
-# ---------- 4) Build controller ----------
+# Build controller 
 system = ctrl.ControlSystem(rules)
 
-# ---------- 5) Helpers: rounding, drivers, recs ----------
+# Helpers
 def _round_mood_int(m):
     """Clamp and round mood to integer 1..5."""
     return int(min(5, max(1, round(float(m)))))
@@ -214,12 +209,12 @@ def predict_stress_with_recs(income_rm_val, mood_1to5, sleep_h_val, work_h_week_
 
     return score, label, top_up, top_down, recs, sim, m_int_used
 
-# ---------- 6) Demo (mood integers only) ----------
+# Case Study
 cases = [
-    ('Case A', 1800, 2, 5.0, 60, 350),  # mood rounded from 1.8 -> 2
+    ('Case A', 1800, 2, 5.0, 60, 350), 
     ('Case B', 6000, 3, 7.5, 42, 120),
-    ('Case C', 12000, 4, 9.0, 30, 50),  # 4.2 -> 4
-    ('Case D', 3500, 2, 6.0, 50, 280),  # 2.4 -> 2
+    ('Case C', 12000, 4, 9.0, 30, 50),  
+    ('Case D', 3500, 2, 6.0, 50, 280),  
 ]
 for name, inc, md, slp, wk, caf in cases:
     score, label, top_up, top_down, recs, _, m_int_used = predict_stress_with_recs(inc, md, slp, wk, caf)
@@ -234,20 +229,20 @@ for name, inc, md, slp, wk, caf in cases:
         for r in recs:
             print("   -", r)
 
-# ---------- 7) Membership diagrams ----------
+# Membership diagrams 
 if SHOW_MEMBERSHIP:
     income.view(); mood.view(); sleep.view(); work.view(); caffeine.view(); stress.view()
-    plt.xticks([1,2,3,4,5])  # mood x-ticks as integers when showing mood
+    plt.xticks([1,2,3,4,5]) 
     plt.show()
 
-# ---------- 8) Aggregated output for an example ----------
+# Aggregated output 
 if SHOW_AGGREGATED:
-    _, _, _, _, _, sim_plot, _ = predict_stress_with_recs(3000, 3, 5.5, 50, 180)  # mood=3 (integer)
+    _, _, _, _, _, sim_plot, _ = predict_stress_with_recs(3000, 3, 5.5, 50, 180)  
     stress.view(sim=sim_plot)
     plt.title("Aggregated output for example inputs")
     plt.show()
 
-# ---------- 9) Output surfaces ----------
+# Output surfaces
 def plot3d(X, Y, Z, title, xlabel, ylabel):
     fig = plt.figure()
     ax  = fig.add_subplot(111, projection='3d')
@@ -286,7 +281,7 @@ def output_space(var_x, var_y, fixed):
                 Z[i, j] = np.nan
     return X, Y, Z
 
-# Surface A: Sleep vs Work (others fixed; mood integer)
+# Surface A: Sleep vs Work 
 if SHOW_SURFACE_A:
     XA, YA, ZA = output_space(
         var_x='sleep_h', var_y='work_h_week',
@@ -295,10 +290,9 @@ if SHOW_SURFACE_A:
     )
     plot3d(XA, YA, ZA, 'Stress surface: Sleep vs Work', 'sleep (h/day)', 'work (h/week)')
 
-# Surface B: Mood vs Work (sweep mood across integers 1..5)
+# Surface B: Mood vs Work 
 if SHOW_SURFACE_B:
-    # Build a grid where the X axis is exactly the integer mood values
-    mood_vals = np.arange(1, 6, 1)  # 1..5
+    mood_vals = np.arange(1, 6, 1) 
     work_vals = np.linspace(work.universe.min(), work.universe.max(), 60)
     X_mood, Y_work = np.meshgrid(mood_vals, work_vals)
     Z = np.zeros_like(X_mood, dtype=float)
@@ -309,7 +303,7 @@ if SHOW_SURFACE_B:
             sim_local.input['income_rm']   = 3000.0
             sim_local.input['sleep_h']     = 6.5
             sim_local.input['caffeine_mg'] = 120.0
-            sim_local.input['mood_5']      = float(int(X_mood[i, j]))  # ensure integer
+            sim_local.input['mood_5']      = float(int(X_mood[i, j]))  
             sim_local.input['work_h_week'] = float(Y_work[i, j])
             try:
                 sim_local.compute()
@@ -319,4 +313,3 @@ if SHOW_SURFACE_B:
 
     plot3d(X_mood, Y_work, Z, 'Stress surface: Mood (integers) vs Work',
            'mood (1–5, integers)', 'work (h/week)')
-
